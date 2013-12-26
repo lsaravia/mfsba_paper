@@ -1,0 +1,953 @@
+
+# Multifractal patterns for natural communities
+
+## Calculate Dq for BCI data
+
+```{r BCI,echo=FALSE}
+# Set directory of datasets 
+# BCI folder data 
+BCIwd<-"~/Dropbox/BCI"   
+
+# folder for periphhyton images               
+PERIwd <- "~/Dropbox/PeriphImages/1999/ImagesTif/c" 
+
+
+oldcd <- getwd() 
+
+# Load BCI functions 
+source('Fun_MF_CTFSR.r')
+
+# change to BCI folder  
+setwd(BCIwd)
+rm(list=c("c1","compDq","compRE","sa","sp","testCI"))
+rm(list=c("qci","testBoot","bt","auto.key"))
+
+# pathnames <- list.files(pattern="[.]R$", path="R/", full.names=TRUE);
+# sapply(pathnames, FUN=source);
+
+# 1982
+#
+load('bci.full1.rdata')
+year <-1982
+sa <- genSpSed_mfSBA(bci.full1,"BCI1982Sp")
+richBCI <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+names(richBCI) <-c("H","S")
+richBCI$Year <- year
+
+sa <- calcDq_mfSBA("BCI1982Sp.sed")
+compBCI <- sa
+compBCI$Year <- year
+plot_image("BCI1982Sp.sed","1982")
+
+# 1985
+#
+rm(bci.full1)
+load('bci.full2.rdata') 
+year <-1985
+sa <- genSpSed_mfSBA(bci.full2,"BCI1985Sp")
+sa <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+sa$Year <- year
+names(sa) <- names(richBCI)
+richBCI <- rbind(richBCI,sa)
+
+sa <- calcDq_mfSBA("BCI1985Sp.sed")
+sa$Year <- year
+compBCI <- rbind(compBCI,sa)
+
+
+# 1990
+#
+rm(bci.full2)
+load('bci.full3.rdata')
+year <-1990
+sa <- genSpSed_mfSBA(bci.full3,"BCI1990Sp")
+sa <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+sa$Year <- year
+names(sa) <- names(richBCI)
+richBCI <- rbind.fill(richBCI,sa)
+
+sa <- calcDq_mfSBA("BCI1990Sp.sed")
+sa$Year <- year
+compBCI <- rbind(compBCI,sa)
+
+## 1995
+#
+rm(bci.full3)
+load('bci.full4.rdata')
+year <-1995
+sa <- genSpSed_mfSBA(bci.full4,"BCI1995Sp")
+sa <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+sa$Year <- year
+names(sa) <- names(richBCI)
+richBCI <- rbind.fill(richBCI,sa)
+
+sa <- calcDq_mfSBA("BCI1995Sp.sed")
+sa$Year <- year
+compBCI <- rbind(compBCI,sa)
+
+# Plot with spatial distribution of species rank 
+#
+require(RColorBrewer)
+col.l = c("white",brewer.pal(8,"Dark2"))
+png("Fig6_BCI1995_SRS.png", width=6,height=6,units="in",res=600)
+plot_image("BCI1995Sp.sed","Species", 501:1000,col.l )
+dev.off()
+
+# Plot with spatial distribution of species biomass
+#
+png("Fig7_BCI1995_Bio.png", width=6.1,height=6.1,units="in",res=600)
+pp <- read_sed("BCI1995Biomass.sed")
+pp <- pp[,501:1000]
+col.l <- colorRampPalette(c('white', 'green', 'purple', 'yellow', 'brown'))(64) 
+#col.l <- c('white', colorRampPalette(c('green','Brown'))(64))
+#col.l <- c('white', colorRampPalette(c('Grey','black'))(64))
+mp = log(max(pp))
+levelplot(log(pp), scales = list(draw = FALSE),xlab =NULL, ylab = NULL,col.regions=col.l,
+            useRaster=T,
+#            colorkey=list(at=seq(-10,6,by=2) ,labels=c("",format(exp(seq(-8,6,by=2)),digits=1,scientific=T))),
+            pretty=T,
+            at=seq(-10,mp,(10+mp)/50),
+            main=list("Biomass", cex=1))
+
+dev.off()
+
+rm(pp,col.l,mp)
+
+
+# 2000
+#
+rm(bci.full4)
+load('bci.full5.rdata')
+year <-2000
+sa <- genSpSed_mfSBA(bci.full5,"BCI2000Sp")
+sa <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+sa$Year <- year
+names(sa) <- names(richBCI)
+richBCI <- rbind.fill(richBCI,sa)
+
+sa <- calcDq_mfSBA("BCI2000Sp.sed")
+sa$Year <- year
+compBCI <- rbind(compBCI,sa)
+
+# 2005
+#
+rm(bci.full5)
+load('bci.full6.rdata')
+year <-2005
+sa <- genSpSed_mfSBA(bci.full6,"BCI2005Sp")
+sa <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+sa$Year <- year
+names(sa) <- names(richBCI)
+richBCI <- rbind.fill(richBCI,sa)
+
+sa <- calcDq_mfSBA("BCI2005Sp.sed")
+sa$Year <- year
+compBCI <- rbind(compBCI,sa)
+
+
+
+## 2010
+#
+rm(bci.full6)
+load('bci.full7.rdata')
+year <-2010
+sa <- genSpSed_mfSBA(bci.full7,"BCI2010Sp")
+sa <- data.frame(matrix(unlist(sa),ncol=2,byrow=T))
+sa$Year <- year
+names(sa) <- names(richBCI)
+richBCI <- rbind.fill(richBCI,sa)
+
+sa <- calcDq_mfSBA("BCI2010Sp.sed")
+sa$Year <- year
+compBCI <- rbind(compBCI,sa)
+
+rm(bci.full7)
+
+qci<- with(compBCI, sapply(SD.Dq,calcCI,7,0.05))
+compBCI$LowCI <- compBCI$Dq-qci
+compBCI$HighCI <- compBCI$Dq+qci
+require(lattice)
+require(Hmisc)
+setwd(oldcd)
+
+png("Fig6_DqComp_BCI.png", width=6,height=6,units="in",res=600)
+with(compBCI,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=compBCI, nx=FALSE, groups=Year, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+  		     panel.xYplot(...)},
+  		     ylab=expression(italic(D[q])),
+  		     xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Year",cex.title=.9, lines=T,points=F,cex=.7),
+           )
+       )
+dev.off()
+
+# Recordar chequear los R2
+with(compBCI, hist(R.Dq))
+```
+
+Curves are similar that is expected if the system is in a steady state.
+
+Test first 4 years with last 3 from Dq BCI
+
+```{r TestFirst_vs_lastDq}
+
+md1 <- with(compBCI, compBCI[q!=0,])
+#md1$rep <- c(rep( 1, 4*20),rep(2,3*20))
+require(statmod)
+require(reshape2)
+compDq <- melt(md1, id.vars=c("Year","q"),measure.var="Dq")
+names(compDq)
+c1 <-dcast(compDq, Year ~ q)
+names(c1)
+c1$trat <- c(1,1,1,1,2,2,2)
+
+# q > 0
+#
+names(c1[,12:21])
+compareGrowthCurves(c1$trat,c1[,12:21],nsim=1000)
+
+#Group1 Group2     Stat P.Value adj.P.Value
+#1      1      2 7.295763   0.031       0.031
+
+# q <0
+names(c1[,2:11])
+
+compareGrowthCurves(c1$trat,c1[,2:11],nsim=1000)
+#   Group1 Group2     Stat P.Value adj.P.Value
+# 1      1      2 3.196573   0.049       0.049
+
+p.adjust(c(0.031,0.049),method="holm")
+
+# 0.062,0.062
+# 
+
+c1$trat <- c(1,1,1,2,2,2,2)
+compareGrowthCurves(c1$trat,c1[,12:21],nsim=1000)
+compareGrowthCurves(c1$trat,c1[,2:11],nsim=1000)
+
+#   Group1 Group2     Stat P.Value adj.P.Value
+#1      1      2 4.205589    0.06        0.06
+# q<0
+# 
+#  Group1 Group2     Stat P.Value adj.P.Value
+#1      1      2 4.180595   0.029       0.029
+
+p.adjust(c(0.06,0.029),method="holm")
+# 0.060,0.058
+```
+
+Calculate Dq from biomass
+
+```{r DqBiomass, echo=FALSE}
+setwd(BCIwd)
+
+year <- 1982
+sa <- calcDq_mfSBA("BCI1982Biomass.sed")
+compBCIBio <- sa
+compBCIBio$Year <- year
+
+year <-1985
+sa <- calcDq_mfSBA("BCI1985Biomass.sed")
+sa$Year <- year
+compBCIBio <- rbind(compBCIBio,sa)
+
+
+year <-1990
+sa <- calcDq_mfSBA("BCI1990Biomass.sed")
+sa$Year <- year
+compBCIBio <- rbind(compBCIBio,sa)
+
+year <-1995
+sa <- calcDq_mfSBA("BCI1995Biomass.sed")
+sa$Year <- year
+compBCIBio <- rbind(compBCIBio,sa)
+
+year <-2000
+sa <- calcDq_mfSBA("BCI2000Biomass.sed")
+sa$Year <- year
+compBCIBio <- rbind(compBCIBio,sa)
+
+year <-2005
+sa <- calcDq_mfSBA("BCI2005Biomass.sed")
+sa$Year <- year
+compBCIBio <- rbind(compBCIBio,sa)
+#compBCIBio <- with(compBCIBio, compBCIBio[Year!=2005,])
+
+year <-2010
+sa <- calcDq_mfSBA("BCI2010Biomass.sed")
+sa$Year <- year
+compBCIBio <- rbind(compBCIBio,sa)
+
+with(compBCIBio, hist(R.Dq))
+
+qci<- with(compBCIBio, sapply(SD.Dq,calcCI,7,0.05))
+compBCIBio$LowCI <- compBCIBio$Dq-qci
+compBCIBio$HighCI <- compBCIBio$Dq+qci
+require(lattice)
+require(Hmisc)
+setwd(oldcd)
+
+png("Fig7_DqComp_BCIBio.png", width=6,height=6,units="in",res=600)
+with(compBCIBio,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=compBCIBio, nx=FALSE, groups=Year, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+    	     panel.xYplot(...)},
+  		     ylab=expression(italic(D[q])),
+  		     xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Year",cex.title=.9, lines=T,points=F,cex=.7),
+           )
+       )
+dev.off()
+
+```
+
+The Dq spectra are not different like with SRS 
+
+Now compare Dq fits with R²
+
+```{r compareR.Dq,echo=FALSE}
+rm(sa,sp,tot1,per,per1)
+
+p1 <- 0.30
+fname='p03-9.sed' 
+sa <-repeat_pmodel(p1,fname,3)
+sp <-if(!exists("sp")) sa else rbind(sp,sa)
+p1 <- 0.50
+fname='p05-9.sed' 
+sa <-repeat_pmodel(p1,fname,3)
+sp <-if(!exists("sp")) sa else rbind(sp,sa)
+p1 <- 0.70
+fname='p07-9.sed' 
+sa <-repeat_pmodel(p1,fname,3)
+sp <-if(!exists("sp")) sa else rbind(sp,sa)
+
+
+require(lattice)
+
+#with(compBCI, hist(R.Dq))
+png("FigS1_RDq_pmodel", width=6,height=6,units="in",res=600)
+histogram(~R.Dq,data=sp,xlab=expression(italic(R^2)))
+dev.off()
+with(sp, range(R.Dq))
+# Range 0.979056 1.000000
+
+png("FigS1_RDq_BCIsrs.png", width=6,height=6,units="in",res=600)
+histogram(~R.Dq,data=compBCI,xlab=expression(italic(R^2)))
+dev.off()
+with(compBCI, range(R.Dq))
+# Range 0.972707 0.999775
+
+nrow(with(compBCI,compBCI[R.Dq<.98,]))/nrow(compBCI)
+with(compBCI,compBCI[R.Dq<.98,])
+
+png("FigS1_RDq_BCIbio.png", width=6,height=6,units="in",res=600)
+histogram(~R.Dq,data=compBCIBio,xlab=expression(italic(R^2)))
+dev.off()
+with(compBCIBio, range(R.Dq))
+# range 0.764857 0.999608
+
+nrow(with(compBCIBio,compBCIBio[R.Dq<.8,]))/nrow(compBCIBio)
+# 10% lower than 0.8 wich correspond to q>4
+
+
+# Hacer grafico de ajuste SRS para 1982
+setwd(BCIwd)
+lf <- list.files(pattern="^t.*Sp\\.sed$")
+
+png("FigS1_ZqvsEps_BCIsrs.png", width=6,height=6,units="in",res=600)
+plotDqFit(lf[[1]],"1982 SRS")
+dev.off()
+
+
+# Ajuste de BCI bio 1982
+lf <- list.files(pattern="^t.*Biomass\\.sed$")
+png("FigS1_ZqvsEps_BCIbio.png", width=6,height=6,units="in",res=600)
+plotDqFit(lf[[1]],"1982 Bio")
+dev.off()
+
+
+plotDqFit(lf[[7]],"2010")
+
+setwd(oldcd)
+# Fit for pmodel
+lf <- list.files(pattern="^t.*9\\.sed$")
+png("FigS1_ZqvsEps_pmod03.png", width=6,height=6,units="in",res=600)
+plotDqFit(lf[[1]],"p1=03")
+dev.off()
+
+
+
+# Ajuste de Per bio 1982 (Dq was already estimated)
+setwd(PERIwd)
+
+lf <- list.files(pattern="^t.*bio\\.sed$")
+setwd(oldcd)
+
+png("FigS1_ZqvsEps_Perbio.png", width=6,height=6,units="in",res=600)
+plotDqFit(lf[[1]],"A11 Bio")
+dev.off()
+
+
+png("FigS1_RDq_Perbio.png", width=6,height=6,units="in",res=600)
+histogram(~R.Dq,data=compPerBio,xlab=expression(italic(R^2)))
+dev.off()
+
+with(compPerBio, range(R.Dq))
+# 0.981872 1.000000
+
+```
+
+
+Next I'll analyze the images from 1999 periphyton experiment which have taxonomic composition measured
+
+First I compare what happens applying a filter to dimish light reflections  
+J*bio.sed images without filter, 
+ *bioF.sed images with median local filter.
+
+```{r perif1999Dq,echo=FALSE}
+
+setwd(PERIwd)
+
+# if the spectrum is already calculated it's not calculated again
+# unflitered images 
+lf <- list.files(pattern=glob2rx("J*bio.sed"))
+sa <- lapply( lf, calcDq_mfSBA)
+
+require(plyr)
+
+sa <- ldply(sa)
+sa$Type  <- "SinFiltro"
+
+lf <- list.files(pattern=glob2rx("J*bioF.sed"))
+sa1 <- lapply( lf, calcDq_mfSBA)
+sa1 <- ldply(sa1)
+sa1$Type  <- "ConFiltro"
+sa<-rbind(sa, sa1)
+
+# Poner fecha de cada placa 
+
+rg <- as.numerice(regexpr("-",lf))
+sa$Date <- rep(substr(lf,rg+1,rg+6),2,each=21) 
+
+setwd(oldcd)
+
+
+qci<- with(sa, sapply(SD.Dq,calcCI,6,0.05))
+sa$LowCI <- sa$Dq-qci
+sa$HighCI <- sa$Dq+qci
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q|Date, data=sa, nx=FALSE, groups=Type, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+  		     ylab=expression(italic(D[q])),
+  		     xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Year",cex.title=.9, lines=T,points=F,cex=.7),
+           )
+       )
+
+```
+
+Filter application does change the spectrum, thus for compatibility with the Oikos paper I use unfiltered images 
+
+```{r calcDqBioPerif}
+
+setwd(PERIwd)
+
+# lista los que no empiezan con astf 
+# y terminan en bio.sed
+lf <- list.files(pattern="^[^astf].*bio\\.sed$")    
+                                                    
+sa <- lapply( lf, calcDq_mfSBA)
+
+require(plyr)
+
+sa <- ldply(sa)
+sa$Type  <- "Bio"
+
+# Set date and plate  
+
+rg <- as.numeric(regexpr("-",lf))
+sa$Date <- rep(substr(lf,rg+1,rg+6),1,each=21)
+
+sa$Plate <- rep(substr(lf,1,rg-1),1,each=21)
+
+setwd(oldcd)
+
+compPerBio <- sa
+
+rm(sa,sa1)
+```
+
+Variable compPerBio have Dq calculated with biomass 
+
+Next I calculate diversity and then we can see what happens with succession for each aquaria, the ones which have the same letter 
+
+```{r calcPerDiversity}
+setwd(oldcd)
+
+sp <- read.table("Peri1999_EspeciesAbundance.txt", header=T)
+
+require(vegan)
+
+richPer <- data.frame(diversity(sp[,3:66]),specnumber(sp[,3:66]))
+names(richPer)<- c("H","S")
+richPer$Plate <- sp$Plate
+sa <- with(compPerBio, compPerBio[q==1,])
+
+richPer$D1Bio <- sa$Dq[match(richPer$Plate, sa$Plate)]
+richPer$Aquaria <- with(richPer, substr(Plate,1,1))
+
+require(plyr)
+sa <- ddply(compPerBio, .(Plate),summarize, 
+                  DeltaDq = Dq[q==-5]-Dq[q==5], 
+                  D1=Dq[q==1])
+
+richPer$DeltaBio <- sa$DeltaDq[match(richPer$Plate, sa$Plate)]
+
+
+require(lattice)
+require(quantreg)
+taus <- c(0.05, 0.1, 0.25,0.5, 0.75, 0.9, 0.95)
+cols <- rep("grey", length(taus))
+
+
+sa <- data.frame(formula=0,quantil=0,slope=0,SD=0,tValue=0,P=0)
+
+for (i in 1:length(taus)) {
+    rq1 <-with(richPer, rq(H~D1Bio,tau=taus[i]))
+    rq1 <-summary(rq1,se="boot",R=1000)
+    print( rq1)   
+    sa <- rbind(sa,c("H-D1",rq1$tau,t(rq1$coefficients[2,])))
+      
+    if(rq1$coefficients[2,4]<0.10) cols[i] <-"blue"
+ }
+sa <-sa[-1,]
+
+#tau: [1] 0.9
+#Coefficients:
+#            Value    Std. Error t value  Pr(>|t|)
+#(Intercept) -8.52207  3.28143   -2.59706  0.01394
+#D1Bio        5.33131  1.67358    3.18557  0.00315
+
+png("Fig8_D1_H_PerBio.png", width=6,height=6,units="in",res=600)
+xyplot(H~D1Bio , data =richPer, 
+       scales=list(tck=-1),ylab=list("Shannon",font=3),
+       xlab=list(expression(italic(D[1])),font=3),main="",
+       panel=function(x,y,col.symbol,...){
+         panel.xyplot(x,y)
+         panel.grid()
+#         panel.abline(rq(y~x,tau=0.5),col="blue")
+         for (i in 1:length(taus)) {
+           panel.abline(rq(y ~ x, tau = taus[i]),
+                  col = cols[i])
+         }
+      }
+    )
+dev.off()
+
+
+cols <- rep("grey", length(taus))
+for (i in 1:length(taus)) {
+    rq1 <-with(richPer, rq(S~D1Bio,tau=taus[i]))
+    rq1 <-summary(rq1,se="boot",R=1000)
+    print( rq1)   
+    if(rq1$coefficients[2,4]<0.1) cols[i] <-"blue"
+    sa <- rbind(sa,c("S-D1",rq1$tau,t(rq1$coefficients[2,])))
+ }
+
+png("Fig8_D1_S_PerBio.png", width=6,height=6,units="in",res=600)
+xyplot(S~D1Bio , data =richPer, 
+       scales=list(tck=-1),ylab=list("Richness",font=3),
+       xlab=list(expression(italic(D[1])),font=3),main="",
+       panel=function(x,y,col.symbol,...){
+         panel.xyplot(x,y)
+         panel.grid()
+#         panel.abline(rq(y~x,tau=0.5),col="blue")
+         for (i in 1:length(taus)) {
+           panel.abline(rq(y ~ x, tau = taus[i]),
+                  col = cols[i])
+         }
+      }
+    )
+dev.off()
+
+
+cols <- rep("grey", length(taus))
+for (i in 1:length(taus)) {
+    rq1 <-with(richPer, rq(H~DeltaBio,tau=taus[i]))
+    rq1 <-summary(rq1,se="boot",R=1000)
+    print( rq1)   
+    if(rq1$coefficients[2,4]<0.1) cols[i] <-"blue"
+    sa <- rbind(sa,c("H-Delta",rq1$tau,t(rq1$coefficients[2,])))
+ }
+
+# no significative 
+
+png("Fig8_DeltaDq_H_PerBio.png", width=6,height=6,units="in",res=600)
+xyplot(H~DeltaBio , data =richPer, 
+       scales=list(tck=-1),ylab=list("Shannon",font=3),
+       xlab=list(expression(italic(Delta*D[q])),font=3),main="",
+       panel=function(x,y,col.symbol,...){
+         panel.xyplot(x,y)
+         panel.grid()
+#         panel.abline(rq(y~x,tau=0.5),col="blue")
+         for (i in 1:length(taus)) {
+           panel.abline(rq(y ~ x, tau = taus[i]),
+                  col = cols[i])
+         }
+      }
+    )
+dev.off()
+
+# S - DeltaBio
+
+cols <- rep("grey", length(taus))
+for (i in 1:length(taus)) {
+    rq1 <-with(richPer, rq(S~DeltaBio,tau=taus[i]))
+    rq1 <-summary(rq1,se="boot",,R=1000)
+    print( rq1)   
+    if(rq1$coefficients[2,4]<0.1) cols[i] <-"blue"
+    sa <- rbind(sa,c("S-Delta",rq1$tau,t(rq1$coefficients[2,])))
+ }
+
+# tau: [1] 0.95
+#Coefficients:
+#            Value    Std. Error t value  Pr(>|t|)
+#(Intercept) 18.34853  4.63068    3.96238  0.00037
+#DeltaBio    26.17941 11.27586    2.32172  0.02657
+
+png("Fig8_DeltaDq_S_PerBio.png", width=6,height=6,units="in",res=600)
+xyplot(S~DeltaBio , data =richPer, 
+       scales=list(tck=-1),ylab=list("Richness",font=3),
+       xlab=list(expression(italic(Delta*D[q])),font=3),main="",
+       panel=function(x,y,col.symbol,...){
+         panel.xyplot(x,y)
+         panel.grid()
+#         panel.abline(rq(y~x,tau=0.5),col="blue")
+         for (i in 1:length(taus)) {
+           panel.abline(rq(y ~ x, tau = taus[i]),
+                  col = cols[i])
+         }
+      }
+    )
+dev.off()
+
+sp <- data.frame(formula=sa$formula,sapply(sa[,2:6],as.numeric))
+require(pander)
+panderOptions('table.style','grid')
+panderOptions('digits',4)
+panderOptions('table.split.table',80)
+
+options(scipen=3,digits=5)
+pandoc(sp)
+# How many points have each aquaria 
+rm(sa,sp)
+
+ddply(richPer, .(Aquaria),nrow)
+
+# only for Aquaria with 5 points
+
+sa <- with(richPer, richPer[Aquaria=="J",])
+rq1 <-with(sa, rq(H~D1Bio,0.5))
+summary(rq1,se="boot")
+
+rq1 <-with(sa, rq(S~D1Bio,0.5))
+summary(rq1,se="boot")
+
+#png("Fig6a_D1vsS_BCI.png", width=6,height=6,units="in",res=600)
+xyplot(S~D1Bio , data =sa, 
+       scales=list(tck=-1),ylab=list("Richness",font=3),
+       xlab=list(expression(italic(D[1])),font=3),main="",
+       panel=function(x,y,...){
+         panel.xyplot(x,y)
+         panel.grid()
+         panel.abline(rq(y~x,tau=0.5),col="blue")
+#         panel.abline(lm(y~x),col="red")
+         }
+       )
+#dev.off()
+
+
+sa <- with(richPer, richPer[Aquaria=="G",])
+rq1 <-with(sa, rq(H~D1Bio,0.5))
+summary(rq1,se="boot")
+
+rq1 <-with(sa, rq(S~D1Bio,0.5))
+summary(rq1,se="boot")
+
+
+rm(sp,sa,rq1,cols,taus)
+```
+
+
+La relacion de H con D1 es positiva y negativa para S (para BCI ambas negativas) para DeltaDq es consistente con D1. 
+Y los quantiles no son significativos, los resultados no confirman el paper anterior. 
+Tomando una sola pecera no son significativos y varian
+
+Ahora calculo Dq por fecha y pecera
+```{r calcDqPerDate&Plate}
+
+require(plyr)
+require(lattice)
+require(Hmisc)
+names(compPerBio)
+compPerBio$Aquaria <- with(compPerBio, substr(Plate,1,1))
+
+#ddply(compPerBio[,1:5],.(Date,q), nrow)
+# 
+qci<- with(compPerBio, sapply(SD.Dq,calcCI,7,0.05))
+compPerBio$LowCI <- compPerBio$Dq-qci
+compPerBio$HighCI <- compPerBio$Dq+qci
+# Si tomo 2*SD los intervalos son más grandes pero corro peligro de decir
+# que son iguales cuando en realidad son distintos.
+
+sa <- with(compPerBio, compPerBio[Aquaria=="A",])
+m <- "Aquaria A"
+png("Fig8_Dq_A_PerBio.png", width=6,height=6,units="in",res=600)
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+    	     ylab=expression(italic(D[q])),
+  		     xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+
+
+# La pecera E cambia muy poco
+sa <- with(compPerBio, compPerBio[Aquaria=="E",])
+png("Fig8_Dq_E_PerBio.png", width=6,height=6,units="in",res=600)
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+  		     xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main="Aquaria E"
+           )
+       )
+dev.off()
+
+sa <- with(compPerBio, compPerBio[Aquaria=="J",])
+png("Fig8_Dq_J_PerBio.png", width=6,height=6,units="in",res=600)
+m <- "Aquaria J"
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+    	     xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+
+sa <- with(compPerBio, compPerBio[Aquaria=="I",])
+png("Fig8_Dq_I_PerBio.png", width=6,height=6,units="in",res=600)
+m <- "Aquaria I"
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+           xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+
+sa <- with(compPerBio, compPerBio[Aquaria=="F",])
+png("Fig8_Dq_F_PerBio.png", width=6,height=6,units="in",res=600)
+m <- "Aquaria F"
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+           xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+
+sa <- with(compPerBio, compPerBio[Aquaria=="G",])
+png("Fig8_Dq_G_PerBio.png", width=6,height=6,units="in",res=600)
+m <- "Aquaria G"
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+           xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+
+sa <- with(compPerBio, compPerBio[Aquaria=="B",])
+png("Fig8_Dq_B_PerBio.png", width=6,height=6,units="in",res=600)
+m <- "Aquaria B"
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+           xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+
+sa <- with(compPerBio, compPerBio[Aquaria=="D",])
+png("Fig8_Dq_D_PerBio.png", width=6,height=6,units="in",res=600)
+m <- "Aquaria D"
+
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=Date, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+           xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Date",cex.title=.9, lines=T,points=F,cex=.7),main=m
+           )
+       )
+dev.off()
+rm(sa)
+
+# Comparison of an early and a late date in 3 different aquaria.
+
+sa <- with(compPerBio, compPerBio[(Date=="990917" | Date=="991203") & 
+                                  (Aquaria=="D" | Aquaria=="E" | Aquaria=="I") ,])
+
+
+# Add number of days
+dd <-data.frame(Date=c("990917","991203"),Days=c(3,80))
+
+sa$Days <- dd$Days[match(sa$Date,dd$Date)]
+
+sa$DatePlate <- with(sa,paste(Days,"-",Aquaria))
+require(Hmisc)
+png("Fig8_Dq_DateAqu_PerBio.png", width=6,height=6,units="in",res=600)
+trellis.par.set(superpose.line=list(lty=c(1,1,1,2,2,2,2,3,3,3,3)))
+#trellis.par.set(superpose.symbol=list(col=c(rep("black",11)))) 
+#trellis.par.set(superpose.line=list(col=c(rep("black",11))))
+#trellis.par.set(superpose.symbol=list(pch=c(0,1,2,3,4,5,6,8,15,16,17)))
+#trellis.par.set(superpose.symbol=list(cex=c(rep(0.6,11))))
+# type="o" para lineas y simbolos
+with(sa,
+    xYplot(Cbind(Dq,LowCI,HighCI) ~ q, data=sa, nx=FALSE, groups=DatePlate, type="l",
+           scales=list(tck=-1),
+           cap=.01,
+           ylim=c(min(LowCI)-.01,max(HighCI)+.01),
+           panel=function(...){
+           panel.abline(h=2, col="grey", lty=2)
+           panel.xYplot(...)},
+           ylab=expression(italic(D[q])),
+           xlab=expression(italic(q)),
+           label.curves=F,
+           auto.key=list(x=.65,y=.9,title="Days-Aquaria",cex.title=.9, lines=T,points=F,cex=.7)
+           )
+       )
+dev.off()
+
+# para ver que archivos
+unique(paste(sa$Plate,sa$Date))
+
+oldcd <- getwd()
+setwd(PERIwd)
+
+
+plot_image("E11-991203bio.sed","991203 D")
+plot_image("D8-990917bio.sed","991203 D")
+plot_image("E9-990917bio.sed","991203 D")
+
+png("Fig8_D6_991203_PerBio.png", width=6,height=6,units="in",res=600)
+plot_image("D6-991203bio.sed","")
+dev.off()
+png("Fig8_I3_991203_PerBio.png", width=6,height=6,units="in",res=600)
+plot_image("I3-991203bio.sed","")
+dev.off()
+png("Fig8_I9_990917_PerBio.png", width=6,height=6,units="in",res=600)
+plot_image("I9-990917bio.sed","")
+dev.off()
+
+setwd(oldcd)
+
+```
+
+Calcular D1 y delta para inicial y final
+
+
+Analizo peceras con 4 o más fechas.
+Hay pecerass con poco cambio J y E
+
+Peceras con mucho cambio A I F G
+
+B y D tengo principio final...Analizar tambien
+Ver relacion con diversidad guardar gráficos
+Falta tambien ver relación con Dq
+
