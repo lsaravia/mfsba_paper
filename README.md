@@ -1,30 +1,11 @@
 # mfsba: Multifractal analysis of spatial patterns in ecological communities
 
-Markdown version of the manuscript and R source code for the data analysis.
+Markdown version of the manuscript 
 
-    maspec.md: manuscript.
-
-You also need to compile the following C++ programs available at <https://github.com/lsaravia/mfsba>:
-
-+ mfSBA: multifractal analysis
-
-+ multispeciesSBA: multifractal analysis of spatial rank surfaces (SRS)
-
-+ p-model: multiplicative multifractal toy model available at <https://github.com/lsaravia/p-model>
-
-## R Markdown files:
-
-You should execute these files inside RStudio chunk by chunk to find possible mistakes due to missing files.
-  
-Pmodel.Rmd: analysis of multifractal multiplicative p-model
-
-Multi_patt.Rmd: analysis of BCI and periphyton data
+Saravia LA (2014) mfSBA: Multifractal analysis of spatial patterns in ecological communities [v1; ref status: approved with reservations 2, http://f1000r.es/2p4]. F1000Research 3: 14. doi:doi: 10.12688/f1000research.3-14.v1.
 
 
+about the mfSBA software available at:
 
-## R functions
-
-
-Fun_Multi_patt.r: functions to the overall multifractal analysis
-
+https://github.com/lsaravia/mfsba/
 
