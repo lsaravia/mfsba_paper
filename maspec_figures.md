@@ -11,4 +11,5 @@
 \includegraphics[width=\textwidth]{Fig2.png}
 \caption{Plot of the linear regressions for different $q$ used to estimate the $D_q$ multifractal spectrum.  }
 \end{figure}
-   
+
+
