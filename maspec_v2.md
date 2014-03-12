@@ -24,7 +24,7 @@ Multifractals characterize variability in a scale-independent way within an
 experimental range. I have developed an open-source software package to
 estimate multifractals using a box-counting algorithm (available from
 <https://github.com/lsaravia/mfsba> and permanently available at doi:
-10.5281/zenodo.7659). The software is specially designed for two dimensional
+[10.5281/zenodo.8481](http://dx.doi.org/10.5281/zenodo.8481)). The software is specially designed for two dimensional
 (2D) images such as the ones obtained from remote sensing, but other 2D data
 types can also be analyzed. Additionally I developed a new metric to analyze
 multispecies spatial patterns with multifractals: spatial rank surface, which is
@@ -34,7 +34,7 @@ included in the software.
 
 ## Update box
 
-I would like to thank the reviewers for their comments. In response to the referees I made available a pre-compiled version of the executables for Windows and a corrected version of the R scripts tested under that operative system (available at https://github.com/lsaravia/mfsba/releases and doi: 10.5281/zenodo.8481). I added the description of the program to perform a randomization confidence envelope that is included in mfSBA. The following is a summary of the changes made to the manuscript:
+I would like to thank the reviewers for their comments. In response to the referees I made available a pre-compiled version of the executables for Windows and a corrected version of the R scripts tested under that operative system (available at <https://github.com/lsaravia/mfsba/releases> and doi: [10.5281/zenodo.8481](http://dx.doi.org/10.5281/zenodo.8481)). I added the description of the program to perform a randomization confidence envelope that is included in mfSBA. The following is a summary of the changes made to the manuscript:
 
 * I have added some examples and clarifications to the introduction.
 * I have explained that the SRS/MFA methodology is novel; I do not intend to make a comparison with other methods here, but present a description of the capabilities of the software. I also included an interpretation of multifractal spectra $D_q$ based on Hill's generalized diversity.
@@ -61,6 +61,10 @@ Several good introductions to multifractal methods applied to ecology are availa
 
 Another way to characterize multifractals is using the so called spectrum of singularities. This spectrum describes multifractals as interwoven sets each one with a singularity exponent $\alpha$ and a fractal dimension $f(\alpha)$ [@Chhabra1989]. The two multifractal representations are equivalent, they display the same information in a different format. But with the spectrum of singularities, two quantities are estimated ($\alpha$ & $f(\alpha)$) from data and are obtained with error. Instead, with generalized dimension only one quantity is estimated $D_q$, thus this method is preferred for statistical comparisons.
 
+The multifractal spectra $D_q$,is related to the Hill's generalized diversity index $N_q$, where $q$ is an arbitrary real number [@Hill1973]. There are special cases of $q$ that are of common use in ecology: for $q=0$ $N_q$ corresponds to the number of species, $q=1$ to the Shannon index, and $q=2$ to the reciprocal of the Simpson's diversity index. Thus $N_q$  defines different diversity measures as $q$ changes, which vary in their sensitivity to rare species.  In a similar way $D_q$ focuses on regions of the plane with higher densities if $q$ is greater and in regions with lower densities if $q$ is lower or negative.   
+There are two important differences, the first is that $N_q$ is calculated at one predetermined scale of measurement, and $D_q$ is related to how $N_q$  changes with scale [@Ricotta2000].  The second difference is that $D_q$ can be calculated on any quantity distributed in space, not only the number of species. The multifractal formalism was originally developed for additive quantities [@Halsey1986], and was later extended to non-additive quantities [@LevyVehel1998a]. This means that to apply MFA, the quantity distributed over space must increase in a mathematical sense. For example, if you have ten species in an area A1 and ten species in an area A2 the number of species in the sum A1+A2 will be greater than or equal to ten. If the number of species were additive the sum A1+A2  has to be 20, but that is not generally true. 
+A limitation of mfSBA in its present version is that it only estimates multifractal spectra for additive quantities.
+
 ## Estimation
 
 To estimate multifractal spectra I used the method of moments based on box-counting [@Halsey1986]. I estimate generalized dimensions and the spectrum of singularities at the same time using the canonical method [@Chhabra1989]. Here I describe only the $D_q$ estimation; the steps for $\alpha$ and $f(\alpha)$ estimation are identical (only the formulae to calculate the quantities are different and can be found in the appendix of Saravia et al. (2012) [@Saravia2012a]).
@@ -77,15 +81,15 @@ When $q = 1$, the denominator of the first term in $D_q$ is undefined, so it mus
 
  (@e3) $D_{q}=\underset{\epsilon\to0}{\lim}\cfrac{{\displaystyle \sum_{i}^{N(\epsilon)}}\mu_{i}(\epsilon)\log\left(\mu_{i}(\epsilon)\right)}{\log\epsilon}$
 
-In practical cases, as the limit can not be assessed, the dimensions are estimated as the slope of $log(Z_q)$ versus $log(\epsilon)$ in equation (@e1) (Figure 1). This is done for different $q$, provided that it is a real number which yields a graph of $D_q$ in terms of $q$, called the spectrum of generalized dimensions (Figure 2).
+In practical cases, as the limit can not be assessed, the dimensions are estimated as the slope of $log(Z_q)$ versus $log(\epsilon)$ (Figure 1) divided by $q-1$ as shown in equation (@e1). This is done for different $q$, provided that it is a real number, which yields a graph of $D_q$ in terms of $q$, called the spectrum of generalized dimensions (Figure 2).
 
 To be an approximate multifractal, the relationship $log(Z_q)$ versus $log(\epsilon)$ should be well described by a linear relationship, although a linear relationship with superimposed oscillations is also acceptable [@Borda-de-Agua2007]. A range of $q$ and $\epsilon$ is fixed and then $D_q$ is estimated using linear regressions. The coefficient of determination ($R^2$) can be used as a descriptive measure of goodness of fit [@Borda-de-Agua2002].
 
 ## Use of mfSBA software
 
-The software was built and tested under Ubuntu 12.04 LTS Linux environment, using the GNU C++ compiler (v4.6.3). It requires the libtiff library for reading tiff images. It can be compiled under Windows environments using the GNU compiler and utilities for that operative system, but it was not tested.
+The software was built and tested under Ubuntu 12.04 LTS Linux environment, using the GNU C++ compiler (v4.6.3). It requires the libtiff library for reading tiff images (<http://www.libtiff.org/>). It can be compiled under Windows environments using the GNU compiler and utilities for that operative system (<http://www.mingw.org/>).
 
-You can download or clone mfSBA from <https://github.com/lsaravia/mfsba> (using ```git clone```) and build it using the make utility.
+You can download or clone mfSBA from <https://github.com/lsaravia/mfsba> (using ```git clone``` or as a zip file) and build it using the make utility.
 
      make -f mfSBA.mak
 
@@ -125,7 +129,7 @@ The program generates four output files, attaching a prefix to the original inpu
 
 ## Species rank surface
 
-I propose to extend the analysis of SAD attaching the rank of each species to its spatial distribution. In this way, the multivariate spatial distribution of all species can be summarized into a univariate distribution. I called this spatial distribution the species-rank surface (SRS), and it can be analyzed and compared using MFA. To construct the SRS, I first calculate the rank-ordering of the species by their abundance from biggest to smallest, starting from one. Then the rank is assigned to the spatial position of the individuals of each species, forming a surface. This landscape has valleys formed by the most abundant species and peaks determined by the rarest species, and the standard MFA can be applied. The program used to calculate this is called multiSpeciesSBA, and is included with the mfSBA source code. You can compile it using the following command:
+I propose to extend the analysis of SAD attaching the rank of each species to its spatial distribution. In this way, the multivariate spatial distribution of all species can be summarized into a univariate distribution. I called this spatial distribution the species-rank surface (SRS), and it can be analyzed and compared using MFA. To construct the SRS, I first calculate the rank-ordering of the species by their abundance from biggest to smallest, starting from one. Then the rank is assigned to the spatial position of the individuals of each species, forming a surface. This landscape has valleys formed by the most abundant species and peaks determined by the rarest species, and the standard MFA can be applied. SRS is additive, in the sense explained earlier, because ranks are not recalculated when the scale changes. The program used to calculate this is called multiSpeciesSBA, and is included with the mfSBA source code. You can compile it using the following command:
 
 	 make -f multiSpeciesSBA.mak
 
@@ -133,37 +137,62 @@ Then all the input files and parameters are identical to mfSBA except that the p
 
 	 ./multiSpeciesSBA t64-0100.sed q21.sed 2 128 20 N
 
+## A confidence envelope for spatial randomness
+
+To determine if $D_q$ spectra are different from ones produced by a random spatial distribution of the quantity analyzed, I developed a randomization test. I shuffled all the positions of the original distribution and recalculated $D_q$. The procedure is repeated many times (e.g. 1000) and the highest and lowest tails determine a confidence envelope [@Crowley1992]. If the actual values of $D_q$ falls outside the envelope the spatial pattern is not random for that particular $q$. This program can be compiled using the following command:
+
+	 make -f mfSBArnz.mak 
+
+The command to run the analysis has a similar structure to the previous:
+
+	 mfSBArnz inputFile outFile qFile minBox maxBox numBoxSizes option numSimul P 
+
+All the parameters previously mentioned have the same meaning, I will explain only the new ones:
+
+* **outFile**: this is the name of a file with all the $D_q$ calculations specified with the numSimul parameter. It has the same format as the s.inputFile with an additional first column labeling the original $D_q$ or a randomization. This file could be used to calculate the confidence envelope with a different P without doing the randomizations again. The program generates another file with an added “.rnz” extension, which contains the summarized results: the first row contains the number of randomizations and the size of the tail, the second row the p-value requested, the third row the field names, and from the fourth row there are five columns: the original values of $q$ and $D_q$, two colums representing the randomization envelope at the requested p-level (DqMax & DqMin) and a column with 1/-1 indicating if the original $D_q$ falls outside the envelope or 0 if it was inside the envelope. 
+
+* **numSimul**: the number of randomizations, a bigger number will give a more accurate confidence envelope at the requested p-level [@Wiegand2004e]. 
+
+* **P**: a two tailed p-value for the confidence envelope, that is the chance than $D_q$ falls outside the envelope if the spatial pattern is random (Type I error). 
+
+An example of this analysis can be performed with the following command:
+
+	 ./mfSBArnz t64-0100.sed t64-0100 q21.sed 2 256 20 S 1000 0.05
+
+If the software is used under Windows the name of the executable program should be changed, deleting “./” and adding the “.exe” extension, for this last example it should be mfSBArnz.exe. 
+
+
 ## R integration
 
-Included with the source is a set of functions as an example to integrate the mfSBA software with the R language. You can load the functions inside R with:
+Included with the source is a set of functions as an example to integrate the mfSBA software with the R language (<http://www.r-project.org/>). You should have compiled or downloaded the executables in the same folder as the R scripts. Then you can load the functions inside R with:
 
-	source('Fun_MFA.r')
+	 source('Fun_MFA.r')
 
 and then run the same given examples:
 
-	dq1<- calcDq_mfSBA("b4-991008bio.sed","q21.sed 2 256 20 S")
+	 dq1<- calcDq_mfSBA("b4-991008bio.sed","q21.sed 2 256 20 S")
 
 An interesting example is to compare the $D_q$ from the example multispecies spatial distribution untransformed
 
-	dq1<- calcDq_mfSBA("t64-0100.sed","q21.sed 2 512 20 S",T)
+	 dq1<- calcDq_mfSBA("t64-0100.sed","q21.sed 2 512 20 S",T)
 
-	dq1$Site <- "Untransformed"
+	 dq1$Site <- "Untransformed"
 
 with the $D_q$ from SRS
 
-	dq<- calcDq_multiSBA("t64-0100.sed","q21.sed 2 512 20 S",T)
+	 dq<- calcDq_multiSBA("t64-0100.sed","q21.sed 2 512 20 S",T)
 
-	dq$Site <- "Species Rank Surface"
+	 dq$Site <- "Species Rank Surface"
 
-	dq <- rbind(dq,dq1)
+	 dq <- rbind(dq,dq1)
 
 and plot $D_q$ with
 
-	plot_DqCI(dq)
+	 plot_DqCI(dq)
 
-In this plot (Figure 1), we can see that the rank ordering of the species in SRS is crucial to obtain a meaningful result. The $D_q$ calculated from the unordered distribution is nearly flat, this corresponds to an almost constant spatial distribution with uncorrelated random noise.
+In this plot (Figure 2), we can see that the two $D_q$ spectra are different. The $D_q$ calculated from the unordered distribution is nearly flat, this corresponds to an almost constant spatial distribution with uncorrelated random noise. The structure of SRS is lost when species are assigned with a different order,  valleys are formed by the most abundant species and peaks of rare species are destroyed. This is similar to comparing a RAD with a figure made with the ranks disordered on the x axis. Although the species distribution is the same, the two surfaces are different (Supplementary Figure 1), which is reflected in their $D_q$ spectra. 
 
-The plot of the *t.inputFile* (Figure 2) gives a visual check of the regressions to obtain $D_q$:
+The plot of the *t.inputFile* (Figure 1) gives a visual check of the regressions to obtain $D_q$:
 
 	plotDqFit("t.t64-0100.sed","q21.sed")
 
@@ -171,13 +200,15 @@ additionally the $R^2$ values could be easily checked:
 
 	hist(dq1$R.Dq)
 
-All the examples and more graphics are included in the file testMFA.r.
+All the examples and more graphics are included in the file testMFA.r, you should change this file to reflect the folder where you downloaded the software.
 
-# Conclusion 
+## Conclusion 
 
-The multifractal spectrum can be used to describe spatial patterns of biomass, density, height, or any continuous variable. The mfSBA software is especially useful for remote sensing data because it can be used with tiff images. Multifractal patterns could be produced by the existence of multiplicative interaction between species and by spatially correlated random processes such as dispersal and growth [@Stanley1988]. Plant and animal species are generally aggregated in space thus is very likely that multifractal analysis can be used in a wide range of cases.
+The multifractal spectrum can be used to describe and compare spatial patterns of biomass, density, height, point patterns, or any continuous variable. The condition is that the distribution of the variable in space must be additive. The mfSBA software is especially useful for remote sensing data because it can be used with tiff images. Multifractal patterns could be produced by the existence of multiplicative interaction between species and by spatially correlated random processes such as dispersal and growth [@Stanley1988]. Plant and animal species are generally aggregated in space thus is very likely that multifractal analysis can be used in a wide range of cases.
 
 The analysis of SRS using $D_q$ adds a new dimension to the comparison of species spatial distributions, because it can be used to compare spatial distributions of all species at the same time and also the abundances are accounted. An exploration of the results of different spatial patterns should be needed as a continuation of the present work.
+
+The analysis of SRS using Dq adds a new dimension to the comparison of species spatial distributions, because it can be used to compare spatial distributions of all species at the same time and as the species ranks are used, this is a spatial version of SAD. The method presented here analyzes SRS as a surface, which is different to SAR and to multifractals calculated with the number of species as in Borda-de-Agua (2002) [@Borda-de-Agua2002].  An exploration of SRS analysis resulting from  different spatial patterns combined with different SADs will be needed as a continuation of the present work. Also the software should be extended to calculate MFA for non-additive distributions such as the number of species.
 
 The software presented here is oriented to obtain multifractal spectra for comparisons, rather than to obtain the true value. While the estimation methods used in mfSBA could be improved [@Borda-de-Agua2007; @DeBartolo2006], it has been used without trouble with the kind of data obtained in ecological studies [@Saravia2012; @Saravia2012a].
 
@@ -185,7 +216,7 @@ Multifractals can be successfully used to analyze several aspects of community s
 
 ## Software availability
 
-Zenodo: Multifractal estimation using a standard box-counting algorithm, doi: 10.5281/zenodo.7659 [@Saravia2014]
+Zenodo: Multifractal estimation using a standard box-counting algorithm: version 2, doi: [10.5281/zenodo.8481](http://dx.doi.org/10.5281/zenodo.8481) [@Saravia2014]
 
 GitHub: Multifractal estimation using a standard box counting algorithm, <https://github.com/lsaravia/mfsba>
 
@@ -205,7 +236,8 @@ I am grateful to Fernando R. Momo for our great conversations about ecological t
 
 Figure 1. Plot of the linear regressions for different $q$ used to estimate the $D_q$ multifractal spectrum.
 
-Figure 2. $D_q$ multifractal spectrum calculated from species spatial distributions.If each species is assigned a number at random (unordered) the $D_q$ is almost flat corresponding to a uniform plus random noise distribution. But when the species rank surface (SRS) is used the $D_q$ spectrum have a wide range of values. The error bars are the standard deviation obtained from the linear regressions used to estimate $D_q$.
+Figure 2. $D_q$ multifractal spectrum calculated from species spatial distributions.
+If the multispecies distribution is analyzed unordered (with species numbers assigned by the simulation software) the $D_q$ is almost flat corresponding to a uniform plus random noise distribution. But when the species rank surface (SRS) is used the $D_q$ spectrum has a wide range of values, corresponding with a highly heterogeneous distribution, formed of valleys for the most abundant species and peaks for rare species. The error bars are the standard deviation obtained from the linear regressions used to estimate $D_q$.
 
 
 ## References  
