@@ -7,5 +7,5 @@ Saravia LA (2014) mfSBA: Multifractal analysis of spatial patterns in ecological
 
 about the mfSBA software available at:
 
-https://github.com/lsaravia/mfsba/
+<https://github.com/lsaravia/mfsba/>
 
