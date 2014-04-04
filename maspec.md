@@ -1,4 +1,4 @@
-# mfSBA: Multifractal analysis of spatial patterns in ecological communities [v1; ref status: approved with reservations 2, http://f1000r.es/2p4]
+# mfSBA: Multifractal analysis of spatial patterns in ecological communities [v2	; ref status: approved with reservations 2, http://f1000r.es/2p4]
 
 
 **Leonardo A. Saravia**, Ph.D.
