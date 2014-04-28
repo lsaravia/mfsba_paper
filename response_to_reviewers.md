@@ -57,17 +57,14 @@ Several comments on the paper and the software:
 
 I appreciate Dr. Yakimov's comments on the manuscript. As a response to them and to other reviewers'  I made several changes in the version 2 of the article:
 
-1) I added windows executables available at <https://github.com/lsaravia/mfsba/releases> and Zenodo
+1) I added windows executables available at https://github.com/lsaravia/mfsba/releases and Zenodo. R for windows can be downloaded from http://cran.r-project.org/bin/windows/base/
 
-2) I added this aclaration to the version 2 of the paper
+2) I added this clarification to the version 2 of the paper
 
-3) I state that the coefficient of determination ($R^2$) can be used as a descriptive measure of goodness of fit, and also that I am not assuming that the objects analyzed are exact multifractals. I think that the Akaike criterion could be a good addition and any one interested could apply it because the data used for regressions is in the file called *t.inputFile*. So you can take the data on this file and recalculate linear and quadratic regressions and compare them. I should add to the models set to compare by AIC the functional form of power law with oscilations specified by Borda-de-Agua (2007). 
+3) I stated that the coefficient of determination ($R^2$) can be used as a descriptive measure of goodness of fit, not as a criterion for multifractality. Besides that I am not assuming that the objects analyzed are exact multifractals. I think that the Akaike criterion could be a good addition and anyone could apply it because the data used for regressions are in the file called *t.inputFile*. So you can take the data on this file and calculate AIC for linear and quadratic regressions and compare them. I should add to the model set to compare by AIC, the functional form of power law with oscillations specified by Borda-de-Agua (2007).
 
-4) As SRS is a surface, and this example shows the difference between two surfaces. Here I intended to describe the software and the SRS will be described in another article. Anyway I can answer that if you have co ocurring species you have to sum all ranks because that is what the algorithm does in each box. Other options could be investigated like taking the maximun or minimun or other function but that is not implemented.
-
-About the neutral model I used it as an example of a not random distribution of species, I added a more complete description to it in its github repository 
-
-
+4) As SRS is a surface, this example shows the difference between two surfaces. Here I intended to describe the software and the SRS will be described in another article. Anyway I can answer that if you have co-occurring species you have to sum all ranks because that is what the algorithm does in each box. Other options could be investigated like taking the maximum or minimum or other function but that is not implemented.
+About the neutral model, I used it as an example of a not random distribution of species, I added a more complete description in its github repository https://github.com/lsaravia/Neutral
 
 
 ## References
@@ -86,7 +83,9 @@ editor. Fractal Image Encoding and Analysis. Springer Verlag. pp. 299–341.
 ecology and evolution. Annu Rev Ecol Syst 23: 405–447.
 48. Wiegand T, Moloney KA (2004) Rings, circles, and null-models for point pattern
 analysis in ecology. Oikos 104: 209–229. doi:10.1111/j.0030-1299.2004.12497.x.
-•
+
+1. Borda-de-Água L, Hubbell SP, He F (2007) Scaling biodiversity under neutrality. Scaling biodiversity. Cambridge: Cambridge University Press. pp. 347–375.
+
 
 -------------------
 
