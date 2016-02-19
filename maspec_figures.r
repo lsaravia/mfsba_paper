@@ -57,6 +57,10 @@ dev.off()
 # Reordered image
 png("Fig3b.png", width=6,height=6,units="in",res=600)
 plot_sed_image("t64-0100Reord.sed","")
+plot3d_sed_image("t64-0100Reord.sed","")
+
+plot3d_sed_image("t64-0100Reord.sed","",4)
+
 dev.off()
 
 
